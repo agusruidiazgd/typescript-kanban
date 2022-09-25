@@ -7,8 +7,12 @@ import {
   StatusesColumnsContainer,
 } from './styles';
 import ICategory from '../../models/ICategory';
+import IColumn from '../../models/IColumns';
+import ICard from '../../models/ICard';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { ThemeContext } from 'styled-components';
 import  getCategoryBackgroundColor from '../../helpers/getCategoryColor';
+import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 
 interface KanbanBoardProps {
   toggleTheme: () => void;
@@ -17,9 +21,13 @@ interface KanbanBoardProps {
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({ toggleTheme }) => {
   const theme = useContext(ThemeContext);
+  const { columns } = useAppSelector((state: any) => state.columns);
+  const { cards } = useAppSelector((state) => state.cards);
   const [selectedCategories, setSelectedCategories] = useState<ICategory[]>(
     Object.values(ICategory)
   );
+
+  console.log('columns', columns);
 
   const handleChangeCheckbox = (category: ICategory) => {
     const foundCategory = selectedCategories.find((item) => item === category);
@@ -34,6 +42,11 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ toggleTheme }) => {
 
     setSelectedCategories([...selectedCategories, category]);
   };
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+    console.log('drop end', destination, source, draggableId);
+  }
 
   return (
     <Container>
@@ -62,7 +75,26 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ toggleTheme }) => {
         ))}
       </Header>
       <StatusesColumnsContainer>
+        <DragDropContext onDragEnd={onDragEnd}>
+          {columns.map((column: IColumn, index: number) => {
+            const cardsArray: ICard[] = [];
 
+            column.cardsIds.forEach((cardId) => {
+              const foundedCard = cards.find((card) => card.id === cardId);
+              if (foundedCard) cardsArray.push(foundedCard);
+            });
+
+            return (
+              // <Column
+              //   key={column.id}
+              //   index={index}
+              //   status={column.id}
+              //   cards={cardsArray}
+              // />
+              <div>{column.title}</div>
+            );
+          })}
+        </DragDropContext>
       </StatusesColumnsContainer>
     </Container>
   );
