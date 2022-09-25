@@ -1,9 +1,9 @@
 import React from 'react'
-import {Todo} from '../models/model';
+// import {Todo} from '../models';
 
 interface Props {
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  todos: any[];
+  setTodos: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const TaskList: React.FC<Props> = ({ todos, setTodos } : Props) => {

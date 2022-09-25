@@ -1,41 +1,33 @@
 import React, {useState} from 'react';
-import InputField from './components/InputField';
-import TaskList from './components/TaskList';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { Todo } from './models/model';
-import './App.css';
+import GlobalStyle from './styles/global';
+import { ThemeProvider } from 'styled-components';
+//  import { useAppDispatch, useAppSelector } from './hooks/useRedux';
+// import ICard from './models/ICard';
+
+// --- COMPONENTS ---
+import KanbanBoard from './components/KanbanBoard';
+
+// --- THEMES ---
+import darkTheme from './styles/themes/dark';
+import lightTheme from './styles/themes/light';
 
 const App: React.FC = () => {
-  const [todo, setTodo] = useState<string>("")
-  const [todos, setTodos] = useState <Todo[]>([]) // array of Todos
-  const cards = useSelector(
-    (state: ArticleState) => state,
-    shallowEqual
-  );
+  const [theme, setTheme] = useState(lightTheme);
+  // const { cards } = useAppSelector((state) => state.cards);
+  // console.log('STATE:', cards);
 
-   console.log('STATE:', cards);
-
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    if(todo){
-      setTodos([...todos, {id: Date.now(), todo: todo, isDone: false}])
-      setTodo("")
-    }
+  const toggleTheme = () => {
+    setTheme(theme.title === 'light' ? darkTheme : lightTheme);
   };
 
-  console.log("------todos:", todos)
   return (
-    <div className="App">
-      <span className="heading">Taskify</span>
-      <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
-      <TaskList
-          todos={todos}
-          setTodos={setTodos}
-          // CompletedTodos={CompletedTodos}
-          // setCompletedTodos={setCompletedTodos}
-        />
-        
-    </div>
+    <ThemeProvider theme={theme}>
+      {/* Provide themes context */}
+      <div className="App">
+        <GlobalStyle /> {/* global styles by createGlobalStyle */}
+        <KanbanBoard toggleTheme={toggleTheme} />
+      </div>
+    </ThemeProvider>
   );
 }
 
