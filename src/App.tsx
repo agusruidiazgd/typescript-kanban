@@ -1,12 +1,19 @@
 import React, {useState} from 'react';
 import InputField from './components/InputField';
 import TaskList from './components/TaskList';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { Todo } from './models/model';
 import './App.css';
 
 const App: React.FC = () => {
   const [todo, setTodo] = useState<string>("")
   const [todos, setTodos] = useState <Todo[]>([]) // array of Todos
+  const cards = useSelector(
+    (state: ArticleState) => state,
+    shallowEqual
+  );
+
+   console.log('STATE:', cards);
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
